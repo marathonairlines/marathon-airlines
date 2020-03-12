@@ -12,12 +12,21 @@ defmodule Marathon.User do
 
   def changeset(user,attrs) do
     user
-    |> cast(asttrs, [:name])
+    |> cast(attrs, [:name])
     |> validate_required([:name])
     |> unique_constraint(:name)
   end
 
-  defp put_pwd_hash(changeset) do
+  def registration_changeset(user, params) do
+    user
+    |> changeset(params)
+    |> cast(attrs, [:password])
+    |> validate_required([:password])
+    |> valide_length(:password, min: 8, max: 32)
+    |> put_pass_hash()
+  end
+
+  defp put_pass_hash(changeset) do
     case changeset do
       %Ecto.Changeset{valid?: true, changes: %{password: pass}} ->
         put_change(changeset, :password_hash, Pbkdf2.hash_pwd_salt(pass))
