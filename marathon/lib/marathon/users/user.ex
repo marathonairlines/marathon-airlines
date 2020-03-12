@@ -16,4 +16,14 @@ defmodule Marathon.User do
     |> validate_required([:name])
     |> unique_constraint(:name)
   end
+
+  defp put_pwd_hash(changeset) do
+    case changeset do
+      %Ecto.Changeset{valid?: true, changes: %{password: pass}} ->
+        put_change(changeset, :password_hash, Pbkdf2.hash_pwd_salt(pass))
+
+      _->
+        changeset
+    end
+  end
 end
