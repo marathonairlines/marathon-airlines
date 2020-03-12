@@ -25,7 +25,7 @@ defmodule Marathon.Users do
 
   def register_user(attrs \\ %{}) do
     %User{}
-    |> User.registration_changeset(user, params)
+    |> User.registration_changeset(attrs)
     |> Repo.insert()
   end
 
@@ -37,9 +37,9 @@ defmodule Marathon.Users do
         {:ok, user}
 
       user ->
-        {:error, unauthorized}
+        {:error, :unauthorized}
 
-      _ ->
+      true ->
         Pbkdf2.no_user_verify()
         {:eror, :not_found}
     end
