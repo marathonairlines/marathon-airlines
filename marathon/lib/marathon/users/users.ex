@@ -28,4 +28,20 @@ defmodule Marathon.Users do
     |> User.registration_changeset(user, params)
     |> Repo.insert()
   end
+
+  def authenticate_by_username_and_pass(name, given_pass) do
+    user = get_user_by(name: name)
+
+    cond do
+      user && Pbkdf2.verify_pass(given_pass, user.password_hash) ->
+        {:ok, user}
+
+      user ->
+        {:error, unauthorized}
+
+      _ ->
+        Pbkdf2.no_user_verify()
+        {:eror, :not_found}
+    end
+  end
 end
