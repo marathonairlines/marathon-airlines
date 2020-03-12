@@ -39,7 +39,7 @@ defmodule Marathon.Users do
       user ->
         {:error, unauthorized}
 
-      _ ->
+      true ->
         Pbkdf2.no_user_verify()
         {:eror, :not_found}
     end
