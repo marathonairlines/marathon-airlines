@@ -10,7 +10,7 @@ defmodule Marathon.User do
     timestamps()
   end
 
-  def changeset(user,attrs) do
+  def changeset(user, attrs) do
     user
     |> cast(attrs, [:name])
     |> validate_required([:name])
@@ -20,9 +20,9 @@ defmodule Marathon.User do
   def registration_changeset(user, params) do
     user
     |> changeset(params)
-    |> cast(attrs, [:password])
+    |> cast(params, [:password])
     |> validate_required([:password])
-    |> valide_length(:password, min: 8, max: 32)
+    |> validate_length(:password, min: 8, max: 32)
     |> put_pass_hash()
   end
 
